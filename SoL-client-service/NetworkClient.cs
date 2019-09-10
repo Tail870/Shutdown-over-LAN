@@ -126,7 +126,6 @@ namespace SoL_client_service
             ServiceEnabled = true;
             // Create and start thread for listening server's commands.
             Service = new Thread(new ThreadStart(HandleServer));
-            Service.IsBackground = true;
             Service.Start();
         }
 
