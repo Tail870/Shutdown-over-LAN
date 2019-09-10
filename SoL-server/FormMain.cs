@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -11,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 
 namespace SoL_server
+
 {
     public partial class FormMain : Form
     {
@@ -18,41 +16,55 @@ namespace SoL_server
         {
             InitializeComponent();
         }
-
-        private Thread ClientListenerThread;
-        private BindingList<Client_Class> listPC = new BindingList<Client_Class>();
-        private int PORT_NO = 870;
-        private IPAddress localAdd = IPAddress.Any;
-        private TcpListener listener;
-        private bool ServerEnabled = true;
-
+        private BindingList<Client_Class> listPC = new BindingList<Client_Class>(); // List of connected clients.
+        /*********************************************************************
+         * In FormMain_Load event
+         * bind list of objects "listPC" and
+         * start to listen for clients.
+         */
+        private Thread ClientListenerThread; // Thread for listener.
         private void FormMain_Load(object sender, EventArgs e)
         {
+            dataGridViewClients.DataSource = listPC;
+            // Create connection listener thread.
             ClientListenerThread = new Thread(new ThreadStart(ClientListener));
             ClientListenerThread.Start();
-            dataGridViewClients.DataSource = listPC;
         }
+        /*********************************************************************
+         * 
+         */
+        private int PORT_NO = 870; // Server port.  Will be changable via configs in future.
+        private TcpListener listener; // Listener object.
+        private bool ServerEnabled = true; // Server flag.
         private void ClientListener()
         {
-            //---listen at the specified IP and port no.---
-            listener = new TcpListener(localAdd, PORT_NO);
+            // Listen at all IPs and specified port.
+            listener = new TcpListener(IPAddress.Any, PORT_NO);
             listener.Start();
+            // While server flag rised.
             while (ServerEnabled)
             {
-                //---incoming client connected---
-                Thread threadHandleClient = new Thread(new ParameterizedThreadStart(HandleClient));
+                // When incoming client connected try to serve him.
                 TcpClient client;
                 try
                 {
+                    // Create TCPClient object from listener.
                     client = listener.AcceptTcpClient();
                 }
                 catch (System.Net.Sockets.SocketException)
                 {
                     break;
                 }
+                // Start serving a client.
+                Thread threadHandleClient = new Thread(new ParameterizedThreadStart(HandleClient));
+                threadHandleClient.IsBackground = true;
                 threadHandleClient.Start(client);
             }
         }
+        /*********************************************************************
+         * Method for addint elements in ListPC
+         * from another threads.
+         */
         void addElement(Client_Class value)
         {
             if (InvokeRequired)
@@ -62,33 +74,36 @@ namespace SoL_server
             }
             listPC.Add(value);
         }
+        /*********************************************************************
+         * Method for serving clients.
+         */
         public void HandleClient(Object arg)
         {
             Client_Class temp = new Client_Class();
             temp.CLIENT = (TcpClient)arg;
             {
-                //---get the incoming client name through a network stream---
+                // Get the incoming client name through a network stream.
                 NetworkStream nwStream = temp.CLIENT.GetStream();
                 byte[] buffer = new byte[temp.CLIENT.ReceiveBufferSize];
                 int bytesRead = nwStream.Read(buffer, 0, temp.CLIENT.ReceiveBufferSize);
                 string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                 temp.Name = dataReceived;
                 nwStream.Write(buffer, 0, bytesRead);
-                nwStream.Flush();
-
+                // Get the incoming client IP.
                 temp.IP = temp.CLIENT.Client.RemoteEndPoint.ToString();
+                // Add client to ListPC (this will add new element to dataGridViewClients).
                 addElement(temp);
             }
-
+            // Since this code expected to be run in separate thread define client's number
+            // in ListPC and rise connected flag.
             int index = listPC.Count() - 1;
             bool Connected = true;
             while (Connected)
             {
-                //---get the incoming data through a network stream---
+                // Get the incoming data through a network stream.
                 NetworkStream nwStream = listPC[index].CLIENT.GetStream();
                 byte[] buffer = new byte[listPC[index].CLIENT.ReceiveBufferSize];
-
-                //---read incoming stream---
+                // Try to read incoming stream.
                 int bytesRead;
                 try
                 {
@@ -96,27 +111,31 @@ namespace SoL_server
                 }
                 catch (System.IO.IOException)
                 {
+                    // In case of failure change connected status.
                     Connected = false;
                     return;
                 }
-                //---convert the data received into a string---
+                // Convert the data received into a string.
+                //TODO This method puts received data in name field.
                 string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                 listPC[index].Name = dataReceived;
                 dataGridViewClients.Invoke((MethodInvoker)delegate
                 {
                     dataGridViewClients.Refresh();
                 });
-                //---write back the text to the client---
+                // Send back received data to the client.
                 nwStream.Write(buffer, 0, bytesRead);
             }
         }
-
+        /*********************************************************************
+         * Methode, when button in
+         * DataGridViewClients was clicked.
+         */
         private void DataGridViewClients_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             {
                 var senderGrid = (DataGridView)sender;
-                if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn &&
-                    e.RowIndex >= 0)
+                if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn && e.RowIndex >= 0)
                 {
                     string textToSend = "mkdir C:\\test";
                     byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
@@ -125,7 +144,10 @@ namespace SoL_server
                 }
             }
         }
-
+        /*********************************************************************
+         * Method when MainForm are closing.
+         * Used to perform normal application' termination.
+         */
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             ServerEnabled = false;

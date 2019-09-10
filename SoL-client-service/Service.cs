@@ -20,7 +20,9 @@ namespace SoL_client_service
 
         protected override void OnStart(string[] args)
         {
+                // Create client service object. 
             networkClient = new NetworkClient();
+                // Create thread for servicing and start it.
             Thread startThread = new Thread(new ThreadStart(networkClient.StartSoLService));
             startThread.Start();
         }
