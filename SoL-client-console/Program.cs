@@ -14,7 +14,6 @@ namespace SoL_client_console
         static int port;
         static void Main(string[] args)
         {
-
             Console.WriteLine("Type in server's address (IP or domain). //Default: localhost");
             address = Console.ReadLine();
             Console.WriteLine("Type in server's listening port. //Default: 870");
