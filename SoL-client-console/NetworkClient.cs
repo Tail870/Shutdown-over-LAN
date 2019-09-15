@@ -32,6 +32,30 @@ namespace SoL_client_service
             ServerAddress = "127.0.0.1";
             // Default port - 870.
             Port = 870;
+        }        
+        /*********************************************************************
+         * Constructor for 
+         * debugging purposes.
+         * Will not be used in release.
+         */
+        public NetworkClient(string ServerAddress)
+        {
+            //Set server's address. Will be changable via configs in future.
+            this.ServerAddress = ServerAddress;
+            // Default port - 870.
+            Port = 870;
+        }        
+        /*********************************************************************
+         * Constructor for 
+         * debugging purposes.
+         * Will not be used in release.
+         */
+        public NetworkClient(int Port)
+        {
+            // Set address to localhost.
+            ServerAddress = "127.0.0.1";
+            //Set server's port. Will be changable via configs in future.
+            this.Port = Port;
         }
         /*********************************************************************
          * Method for connecting 
