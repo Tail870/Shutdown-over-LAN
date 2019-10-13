@@ -9,11 +9,12 @@ namespace SoL_server
     class Client_Class
     {
         // Client's name.
-        public string Name  { get; set; }
+        public string Name { get; set; }
+        // Client's OS.
+        public string OS { get; set; }
         // Client's IP.
         public string IP { get; set; }
         // Client's TCPClient object. that holds connection.
         public TcpClient CLIENT;
-
     }
 }

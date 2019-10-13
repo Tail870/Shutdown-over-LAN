@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 
 namespace SoL_server
 
@@ -77,20 +78,93 @@ namespace SoL_server
         /*********************************************************************
          * Method for serving clients.
          */
+        const int SUPPORTEDPROTOCOLVERSION = 0;
         public void HandleClient(Object arg)
         {
             Client_Class temp = new Client_Class();
             temp.CLIENT = (TcpClient)arg;
             {
-                // Get the incoming client name through a network stream.
+                // Get the incoming client info through a network stream.
                 NetworkStream nwStream = temp.CLIENT.GetStream();
-                byte[] buffer = new byte[temp.CLIENT.ReceiveBufferSize];
-                int bytesRead = nwStream.Read(buffer, 0, temp.CLIENT.ReceiveBufferSize);
-                string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                temp.Name = dataReceived;
-                nwStream.Write(buffer, 0, bytesRead);
-                // Get the incoming client IP.
+                StreamReader streamReader = new StreamReader(nwStream);
+                try
+                {
+                    {
+                        String ProtocolNameVersion = streamReader.ReadLine();
+                        int ProtocolVersion;
+                        if (!ProtocolNameVersion.StartsWith("MOL:"))
+                        {
+                            nwStream.Close();
+                            temp.CLIENT.Close();
+                            return;
+                        }
+                        if (!int.TryParse(ProtocolNameVersion.Substring(4), out ProtocolVersion))
+                        {
+                            nwStream.Close();
+                            temp.CLIENT.Close();
+                            return;
+                        }
+                        if (SUPPORTEDPROTOCOLVERSION > ProtocolVersion)
+                        {
+                            // Disable unsupported features for this client
+                        }
+                    }
+                    {
+                        String ASKline = streamReader.ReadLine();
+                        if (!ASKline.StartsWith("ASK:"))
+                        {
+                            nwStream.Close();
+                            temp.CLIENT.Close();
+                            return;
+                        }
+                        if (ASKline.Substring(4) != "connect")
+                        {
+                            nwStream.Close();
+                            temp.CLIENT.Close();
+                            return;
+                        }
+                    }
+                    {
+                        String NAMEline = streamReader.ReadLine();
+                        if (!(NAMEline.StartsWith("NAME:") || NAMEline.Length > 5))
+                        {
+                            nwStream.Close();
+                            temp.CLIENT.Close();
+                            return;
+                        }
+                        temp.Name = NAMEline.Substring(5);
+                    }
+                    {
+                        String OSline = streamReader.ReadLine();
+                        if (!OSline.StartsWith("OS:"))
+                        {
+                            nwStream.Close();
+                            temp.CLIENT.Close();
+                            return;
+                        }
+                        temp.OS = OSline.Substring(3);
+                    }
+                    {
+                        if (streamReader.Peek() >= 0)
+                        {
+                            nwStream.Close();
+                            temp.CLIENT.Close();
+                            return;
+                        }
+                    }
+                }
+                catch (System.NullReferenceException)
+                {
+                    temp.CLIENT.Close();
+                    return;
+                }
+
+                // Get the incoming client's IP.
                 temp.IP = temp.CLIENT.Client.RemoteEndPoint.ToString();
+
+                string ServerConnectResponse = "MOL:0\n" + "STAT:ok\n";
+                byte[] buffer = Encoding.UTF8.GetBytes(ServerConnectResponse);
+                nwStream.Write(buffer, 0, ServerConnectResponse.Length);
                 // Add client to ListPC (this will add new element to dataGridViewClients).
                 addElement(temp);
             }
@@ -131,16 +205,35 @@ namespace SoL_server
          * Methode, when button in
          * DataGridViewClients was clicked.
          */
-        private void DataGridViewClients_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void DataGridViewClients_CellContentClick(object sender, DataGridViewCellEventArgs ClickedCell)
         {
             {
                 var senderGrid = (DataGridView)sender;
-                if (senderGrid.Columns[e.ColumnIndex] is DataGridViewButtonColumn && e.RowIndex >= 0)
+                if (senderGrid.Columns[ClickedCell.ColumnIndex] is DataGridViewButtonColumn && ClickedCell.RowIndex >= 0)
                 {
-                    string textToSend = "mkdir C:\\test";
-                    byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
-                    NetworkStream nwStream = listPC[dataGridViewClients.CurrentCell.RowIndex].CLIENT.GetStream();
-                    nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                    switch (ClickedCell.ColumnIndex)
+                    {
+                        case 1:
+                            {
+                                string textToSend = "MOL:0\n" +
+                                                    "ACT:cmd\n" +
+                                                    "OPT:" + "mkdir C:\\test\n";
+                                byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
+                                NetworkStream nwStream = listPC[dataGridViewClients.CurrentCell.RowIndex].CLIENT.GetStream();
+                                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                                break;
+                            }
+                        case 2:
+                            {
+                                string textToSend = "MOL:0\n" +
+                                                    "ACT:shutdown\n" +
+                                                    "OPT:" + "force=y," + "timer=0\n";
+                                byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
+                                NetworkStream nwStream = listPC[dataGridViewClients.CurrentCell.RowIndex].CLIENT.GetStream();
+                                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                                break;
+                            }
+                    }
                 }
             }
         }
@@ -157,6 +250,11 @@ namespace SoL_server
                 listPC[i].CLIENT.GetStream().Close();
                 listPC[i].CLIENT.Close();
             }
+        }
+
+        private void buttonShutdownSelected_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
