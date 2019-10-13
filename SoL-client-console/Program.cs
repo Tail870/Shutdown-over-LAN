@@ -41,11 +41,12 @@ namespace SoL_client_console
             // Create thread for servicing and start it.
             Thread startThread = new Thread(new ThreadStart(networkClient.StartSoLService));
             startThread.Start();
-            while (true)
+            while (!networkClient.Connected)
             {
-                Console.WriteLine("Thread status: " + startThread.ThreadState.ToString());
+                Console.WriteLine("Attempting to connect...");
                 Thread.Sleep(2000);
             }
+            Console.WriteLine("Connected!");
         }
     }
 }

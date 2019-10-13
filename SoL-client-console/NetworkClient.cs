@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -7,6 +9,7 @@ namespace SoL_client_service
 {
     public class NetworkClient
     {
+        const int SUPPORTED_PROTOCOL_VERSION = 0;
         /*********************************************************************
          * Main constructor.
          * When called receves
@@ -32,7 +35,7 @@ namespace SoL_client_service
             ServerAddress = "127.0.0.1";
             // Default port - 870.
             Port = 870;
-        }        
+        }
         /*********************************************************************
          * Constructor for 
          * debugging purposes.
@@ -44,7 +47,7 @@ namespace SoL_client_service
             this.ServerAddress = ServerAddress;
             // Default port - 870.
             Port = 870;
-        }        
+        }
         /*********************************************************************
          * Constructor for 
          * debugging purposes.
@@ -58,13 +61,17 @@ namespace SoL_client_service
             this.Port = Port;
         }
         /*********************************************************************
+         * 
+         */
+
+        /*********************************************************************
          * Method for connecting 
          * to server. Should be running
          * in separate thread 
          * otherwise main will be blocked
          * until successful connection.
          */
-        bool Connected = false;          // Connection status.
+        public bool Connected = false;  // Connection status.
         private int RetryCooldown = 500; // Connection retry cooldown in ms. Will be changable via configs in future.
         private TcpClient client;        // TCP-socket.
         private NetworkStream nwStream;  // Network stream for exchanging data with server.
@@ -73,27 +80,76 @@ namespace SoL_client_service
             // Clear nwStream object if reconnecting.
             if (nwStream != null)
                 nwStream = null;
+            string name = Environment.MachineName;
+            var os = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\", "ProductName", "");
+            if (Environment.Is64BitOperatingSystem)
+                os += " 64 bit";
+            else
+                os += " 32 bit";
+            string SendData = "MOL:" + SUPPORTED_PROTOCOL_VERSION.ToString() + "\n" +
+                              "ASK:connect\n" +
+                              "NMAE:" + name + "\n" +
+                              "OS:" + os + "\n";
             while (!Connected)
             {
                 try
                 {
-                    // Get computer's system name and convert to binary format.
-                    string name = Environment.MachineName;
-                    byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(name);
+                    byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(SendData);
                     // Create socket and establish connection.
                     client = new TcpClient(ServerAddress, Port);
                     nwStream = client.GetStream();
                     // Send client's name to server.
                     nwStream.Write(bytesToSend, 0, bytesToSend.Length);
                     // Read answer.
-                    byte[] bytesToRead = new byte[client.ReceiveBufferSize];
-                    int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
+                    StreamReader streamReader = new StreamReader(nwStream);
+                    {
+                        String ProtocolNameVersion = streamReader.ReadLine();
+                        if (!ProtocolNameVersion.StartsWith("MOL:"))
+                        {
+                            nwStream.Close();
+                            client.Close();
+                        }
+                        if (!int.TryParse(ProtocolNameVersion.Substring(4), out int ProtocolVersion))
+                        {
+                            nwStream.Close();
+                            client.Close();
+                        }
+                    }
+                    {
+                        String Stat = streamReader.ReadLine();
+                        if (!Stat.StartsWith("STAT:"))
+                        {
+                            nwStream.Close();
+                            client.Close();
+                        }
+                        if (!(Stat.Substring(5) == "ok"))
+                        {
+                            nwStream.Close();
+                            client.Close();
+                        }
+                    }
+                    if (streamReader.Peek() >= 0)
+                    {
+                        nwStream.Close();
+                        client.Close();
+                    }
                     // Rise connected flag.
                     Connected = true;
                 }
-                catch
+                // If connection failed clear terminate TCP connection 
+                // and wait before next attempt.
+                catch (System.NullReferenceException)
                 {
-                    // If connection failed wait before another attempt.
+                    client.Close();
+                    Thread.Sleep(RetryCooldown);
+                }
+                catch (System.IO.IOException)
+                {
+                    client.Close();
+                    Thread.Sleep(RetryCooldown);
+                }
+                catch (System.Net.Sockets.SocketException)
+                {
                     Thread.Sleep(RetryCooldown);
                 }
             }
@@ -118,7 +174,7 @@ namespace SoL_client_service
                     // Convert from binary to ASCII string.
                     string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                     // Perform received command.
-                    System.Diagnostics.Process.Start("CMD.exe", "/C " + dataReceived);
+                    Console.Write(dataReceived);
                 }
                 catch
                 {
@@ -131,7 +187,7 @@ namespace SoL_client_service
                     }
                     else
                     {
-                        // Otherwise abort loop in case disablence service.
+                        // Otherwise abort loop in case of disabled service.
                         return;
                     }
                 }

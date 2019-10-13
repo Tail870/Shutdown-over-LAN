@@ -57,56 +57,46 @@ namespace SoL_server
                     break;
                 }
                 // Start serving a client.
-                Thread threadHandleClient = new Thread(new ParameterizedThreadStart(HandleClient));
-                threadHandleClient.IsBackground = true;
+                Thread threadHandleClient = new Thread(new ParameterizedThreadStart(HandleClient))
+                {
+                    IsBackground = true
+                };
                 threadHandleClient.Start(client);
             }
         }
         /*********************************************************************
-         * Method for addint elements in ListPC
-         * from another threads.
+         * Method for serving corect  clients and dropping incorect ones.
          */
-        void addElement(Client_Class value)
-        {
-            if (InvokeRequired)
-            {
-                this.Invoke(new Action<Client_Class>(addElement), new object[] { value });
-                return;
-            }
-            listPC.Add(value);
-        }
-        /*********************************************************************
-         * Method for serving clients.
-         */
-        const int SUPPORTEDPROTOCOLVERSION = 0;
+        const int SUPPORTED_PROTOCOL_VERSION = 0;
         public void HandleClient(Object arg)
         {
-            Client_Class temp = new Client_Class();
-            temp.CLIENT = (TcpClient)arg;
+            Client_Class temp = new Client_Class
+            {
+                CLIENT = (TcpClient)arg
+            };
             {
                 // Get the incoming client info through a network stream.
                 NetworkStream nwStream = temp.CLIENT.GetStream();
-                StreamReader streamReader = new StreamReader(nwStream);
                 try
                 {
+                    StreamReader streamReader = new StreamReader(nwStream);
                     {
                         String ProtocolNameVersion = streamReader.ReadLine();
-                        int ProtocolVersion;
                         if (!ProtocolNameVersion.StartsWith("MOL:"))
                         {
                             nwStream.Close();
                             temp.CLIENT.Close();
                             return;
                         }
-                        if (!int.TryParse(ProtocolNameVersion.Substring(4), out ProtocolVersion))
+                        if (!int.TryParse(ProtocolNameVersion.Substring(4), out int ProtocolVersion))
                         {
                             nwStream.Close();
                             temp.CLIENT.Close();
                             return;
                         }
-                        if (SUPPORTEDPROTOCOLVERSION > ProtocolVersion)
+                        if (SUPPORTED_PROTOCOL_VERSION > ProtocolVersion)
                         {
-                            // Disable unsupported features for this client
+                            //TODO: Disable unsupported features for this client
                         }
                     }
                     {
@@ -158,47 +148,89 @@ namespace SoL_server
                     temp.CLIENT.Close();
                     return;
                 }
-
+                catch (System.IO.IOException)
+                {
+                    temp.CLIENT.Close();
+                    return;
+                }
                 // Get the incoming client's IP.
                 temp.IP = temp.CLIENT.Client.RemoteEndPoint.ToString();
-
-                string ServerConnectResponse = "MOL:0\n" + "STAT:ok\n";
+                string ServerConnectResponse = "MOL:0\n" +
+                                               "STAT:ok\n";
                 byte[] buffer = Encoding.UTF8.GetBytes(ServerConnectResponse);
                 nwStream.Write(buffer, 0, ServerConnectResponse.Length);
                 // Add client to ListPC (this will add new element to dataGridViewClients).
-                addElement(temp);
+                Invoke((MethodInvoker)(() => listPC.Add(temp)));
+                int index = listPC.Count() - 1;
+                Thread threadListenClientStream = new Thread(new ParameterizedThreadStart(ListenClientStream))
+                {
+                    IsBackground = true
+                };
+                threadListenClientStream.Start(index);
             }
-            // Since this code expected to be run in separate thread define client's number
-            // in ListPC and rise connected flag.
-            int index = listPC.Count() - 1;
-            bool Connected = true;
-            while (Connected)
+        }
+        public void ListenClientStream(Object arg)
+        {
+            Client_Class clientObj = listPC[(int)arg];
+            while (true)
             {
-                // Get the incoming data through a network stream.
-                NetworkStream nwStream = listPC[index].CLIENT.GetStream();
-                byte[] buffer = new byte[listPC[index].CLIENT.ReceiveBufferSize];
-                // Try to read incoming stream.
+                byte[] buffer;
                 int bytesRead;
                 try
                 {
-                    bytesRead = nwStream.Read(buffer, 0, listPC[index].CLIENT.ReceiveBufferSize);
+                    // Get the incoming data through a network stream.
+                    NetworkStream nwStream = clientObj.CLIENT.GetStream();
+                    buffer = new byte[clientObj.CLIENT.ReceiveBufferSize];
+                    // Try to read incoming stream.
+                    bytesRead = nwStream.Read(buffer, 0, clientObj.CLIENT.ReceiveBufferSize);
+                    if (bytesRead < 1)
+                    {
+                        clientObj.CLIENT.Close();
+                        Invoke((MethodInvoker)(() => listPC.Remove(clientObj)));
+                        Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
+                        return;
+                    }
+                    else
+                    {
+                        nwStream.Write(new byte[0], 0, 0);
+                        StreamReader streamReader = new StreamReader(nwStream);
+                        {
+                            String ProtocolNameVersion = streamReader.ReadLine();
+                            if (ProtocolNameVersion.StartsWith("MOL:") && int.TryParse(ProtocolNameVersion.Substring(4), out int ProtocolVersion))
+                            {
+                                String ASKline = streamReader.ReadLine();
+                                if (ASKline.StartsWith("ASK:"))
+                                    if (ASKline.Substring(4) == "disconnect")
+                                    {
+                                        nwStream.Close();
+                                        clientObj.CLIENT.Close();
+                                        Invoke((MethodInvoker)(() => listPC.Remove(clientObj)));
+                                        Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
+                                        return;
+                                    }
+                            }
+                        }
+                    }
                 }
-                catch (System.IO.IOException)
+                catch (IOException)
                 {
-                    // In case of failure change connected status.
-                    Connected = false;
+                    // In case of failure stop thread.
+                    clientObj.CLIENT.Close();
+                    Invoke((MethodInvoker)(() => listPC.Remove(clientObj)));
+                    Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
+                    return;
+                }
+                catch (System.ObjectDisposedException)
+                {
+                    // In case of failure stop thread.
+                    clientObj.CLIENT.Close();
+                    Invoke((MethodInvoker)(() => listPC.Remove(clientObj)));
+                    Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
                     return;
                 }
                 // Convert the data received into a string.
-                //TODO This method puts received data in name field.
                 string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                listPC[index].Name = dataReceived;
-                dataGridViewClients.Invoke((MethodInvoker)delegate
-                {
-                    dataGridViewClients.Refresh();
-                });
-                // Send back received data to the client.
-                nwStream.Write(buffer, 0, bytesRead);
+                Invoke((MethodInvoker)(() => richTextBox1.Text = dataReceived));
             }
         }
         /*********************************************************************
@@ -213,24 +245,14 @@ namespace SoL_server
                 {
                     switch (ClickedCell.ColumnIndex)
                     {
-                        case 1:
+                        case 0:
                             {
-                                string textToSend = "MOL:0\n" +
-                                                    "ACT:cmd\n" +
-                                                    "OPT:" + "mkdir C:\\test\n";
-                                byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
-                                NetworkStream nwStream = listPC[dataGridViewClients.CurrentCell.RowIndex].CLIENT.GetStream();
-                                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                                listPC[dataGridViewClients.CurrentCell.RowIndex].Cmd("mkdir C:\\test\\");
                                 break;
                             }
-                        case 2:
+                        case 1:
                             {
-                                string textToSend = "MOL:0\n" +
-                                                    "ACT:shutdown\n" +
-                                                    "OPT:" + "force=y," + "timer=0\n";
-                                byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
-                                NetworkStream nwStream = listPC[dataGridViewClients.CurrentCell.RowIndex].CLIENT.GetStream();
-                                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                                listPC[dataGridViewClients.CurrentCell.RowIndex].Shutdown(true, 0);
                                 break;
                             }
                     }
@@ -252,9 +274,21 @@ namespace SoL_server
             }
         }
 
-        private void buttonShutdownSelected_Click(object sender, EventArgs e)
+        private void ButtonShutdownSelected_Click(object sender, EventArgs e)
         {
+            for (int i = 0; i < listPC.Count; i++)
+            {
+                if (listPC[i].IsSelected)
+                    listPC[i].Shutdown(true, 0);
+            }
+        }
 
+        private void ButtonShutdownAllClients_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < listPC.Count; i++)
+            {
+                listPC[i].Shutdown(true, 0);
+            }
         }
     }
 }
