@@ -26,7 +26,10 @@ namespace SoL_server
         {
             dataGridViewClients.DataSource = listPC;
             // Create connection listener thread.
-            ClientListenerThread = new Thread(new ThreadStart(ClientListener));
+            ClientListenerThread = new Thread(new ThreadStart(ClientListener))
+            {
+                IsBackground = true
+            };
             ClientListenerThread.Start();
         }
         /*********************************************************************
@@ -283,8 +286,6 @@ namespace SoL_server
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             ServerEnabled = false;
-            while (ClientListenerThread.IsAlive)
-                Thread.Sleep(1);
             for (int i = 0; i < listPC.Count; i++)
             {
                 listPC[i].CLIENT.GetStream().Close();
