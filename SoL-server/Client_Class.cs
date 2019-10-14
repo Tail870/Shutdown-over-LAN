@@ -20,14 +20,26 @@ namespace SoL_server
         public TcpClient CLIENT;
 
         const int SUPPORTED_PROTOCOL_VERSION = 0;
-        public void Cmd(String opt)
+        public void Cmd(String opt)  
         {
             string textToSend = "MOL:" + SUPPORTED_PROTOCOL_VERSION + "\n" +
                                 "ACT:cmd\n" +
                                 "OPT:" + opt + "\n";
             byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
-            NetworkStream nwStream = CLIENT.GetStream();
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            NetworkStream nwStream;
+            try
+            {
+                nwStream = CLIENT.GetStream();
+                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            }
+            catch (System.ObjectDisposedException)
+            {
+                return;
+            }
+            catch (System.IO.IOException)
+            {
+                return;
+            }
         }
         public void Shutdown(bool force, int timer)
         {
@@ -40,8 +52,20 @@ namespace SoL_server
                                 "ACT:shutdown\n" +
                                 "OPT:" + "force=" + forceChar + "," + "timer=" + timer.ToString() + "\n";
             byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
-            NetworkStream nwStream = CLIENT.GetStream();
-            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            NetworkStream nwStream;
+            try
+            {
+                nwStream = CLIENT.GetStream();
+                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            }
+            catch (System.ObjectDisposedException)
+            {
+                return;
+            }
+            catch (System.IO.IOException)
+            {
+                return;
+            }
         }
     }
 }

@@ -128,11 +128,7 @@ namespace SoL_client_service
                             client.Close();
                         }
                     }
-                    if (streamReader.Peek() >= 0)
-                    {
-                        nwStream.Close();
-                        client.Close();
-                    }
+
                     // Rise connected flag.
                     Connected = true;
                 }

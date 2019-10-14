@@ -35,34 +35,36 @@ namespace SoL_server
          * 
          */
         private int PORT_NO = 870; // Server port.  Will be changable via configs in future.
-        private TcpListener listener; // Listener object.
         private bool ServerEnabled = true; // Server flag.
         private void ClientListener()
         {
             // Listen at all IPs and specified port.
-            listener = new TcpListener(IPAddress.Any, PORT_NO);
-            listener.Start();
+            TcpListener listener = new TcpListener(IPAddress.Any, PORT_NO);
             // While server flag rised.
             while (ServerEnabled)
             {
+                listener.Start();
                 // When incoming client connected try to serve him.
                 TcpClient client;
                 try
                 {
                     // Create TCPClient object from listener.
                     client = listener.AcceptTcpClient();
+                    // Start serving a client.
+                    Thread threadHandleClient = new Thread(new ParameterizedThreadStart(HandleClient))
+                    {
+                        IsBackground = true
+                    };
+                    threadHandleClient.Start(client);
                 }
                 catch (System.Net.Sockets.SocketException)
                 {
                     break;
                 }
-                // Start serving a client.
-                Thread threadHandleClient = new Thread(new ParameterizedThreadStart(HandleClient))
-                {
-                    IsBackground = true
-                };
-                threadHandleClient.Start(client);
+                listener.Stop();
+                Thread.Sleep(10);
             }
+            listener = null;
         }
         /*********************************************************************
          * Method for serving corect  clients and dropping incorect ones.
@@ -160,33 +162,50 @@ namespace SoL_server
                 byte[] buffer = Encoding.UTF8.GetBytes(ServerConnectResponse);
                 nwStream.Write(buffer, 0, ServerConnectResponse.Length);
                 // Add client to ListPC (this will add new element to dataGridViewClients).
+
+                if (temp.CLIENT.Client.Poll(1, SelectMode.SelectRead))
+                {
+                    temp.CLIENT.Close();
+                    return;
+                }
+
+                int index = listPC.Count();
                 Invoke((MethodInvoker)(() => listPC.Add(temp)));
-                int index = listPC.Count() - 1;
                 Thread threadListenClientStream = new Thread(new ParameterizedThreadStart(ListenClientStream))
                 {
                     IsBackground = true
                 };
-                threadListenClientStream.Start(index);
+                //threadListenClientStream.Start(index);
+                threadListenClientStream.Start(temp);
             }
         }
         public void ListenClientStream(Object arg)
         {
-            Client_Class clientObj = listPC[(int)arg];
+
+            //Client_Class singleClient = listPC[(int)arg];
+            Client_Class singleClient = (Client_Class)arg;
             while (true)
             {
                 byte[] buffer;
                 int bytesRead;
                 try
                 {
+                    if (singleClient.CLIENT.Client.Poll(1, SelectMode.SelectRead))
+                    {
+                        singleClient.CLIENT.Close();
+                        Invoke((MethodInvoker)(() => listPC.Remove(singleClient)));
+                        Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
+                        return;
+                    }
                     // Get the incoming data through a network stream.
-                    NetworkStream nwStream = clientObj.CLIENT.GetStream();
-                    buffer = new byte[clientObj.CLIENT.ReceiveBufferSize];
+                    NetworkStream nwStream = singleClient.CLIENT.GetStream();
+                    buffer = new byte[singleClient.CLIENT.ReceiveBufferSize];
                     // Try to read incoming stream.
-                    bytesRead = nwStream.Read(buffer, 0, clientObj.CLIENT.ReceiveBufferSize);
+                    bytesRead = nwStream.Read(buffer, 0, singleClient.CLIENT.ReceiveBufferSize);
                     if (bytesRead < 1)
                     {
-                        clientObj.CLIENT.Close();
-                        Invoke((MethodInvoker)(() => listPC.Remove(clientObj)));
+                        singleClient.CLIENT.Close();
+                        Invoke((MethodInvoker)(() => listPC.Remove(singleClient)));
                         Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
                         return;
                     }
@@ -203,8 +222,8 @@ namespace SoL_server
                                     if (ASKline.Substring(4) == "disconnect")
                                     {
                                         nwStream.Close();
-                                        clientObj.CLIENT.Close();
-                                        Invoke((MethodInvoker)(() => listPC.Remove(clientObj)));
+                                        singleClient.CLIENT.Close();
+                                        Invoke((MethodInvoker)(() => listPC.Remove(singleClient)));
                                         Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
                                         return;
                                     }
@@ -215,16 +234,16 @@ namespace SoL_server
                 catch (IOException)
                 {
                     // In case of failure stop thread.
-                    clientObj.CLIENT.Close();
-                    Invoke((MethodInvoker)(() => listPC.Remove(clientObj)));
+                    singleClient.CLIENT.Close();
+                    Invoke((MethodInvoker)(() => listPC.Remove(singleClient)));
                     Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
                     return;
                 }
                 catch (System.ObjectDisposedException)
                 {
                     // In case of failure stop thread.
-                    clientObj.CLIENT.Close();
-                    Invoke((MethodInvoker)(() => listPC.Remove(clientObj)));
+                    singleClient.CLIENT.Close();
+                    Invoke((MethodInvoker)(() => listPC.Remove(singleClient)));
                     Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
                     return;
                 }
@@ -266,7 +285,8 @@ namespace SoL_server
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             ServerEnabled = false;
-            listener.Stop();
+            while (ClientListenerThread.IsAlive)
+                Thread.Sleep(1);
             for (int i = 0; i < listPC.Count; i++)
             {
                 listPC[i].CLIENT.GetStream().Close();
