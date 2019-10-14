@@ -13,10 +13,8 @@ namespace SoL_server
 {
     public partial class FormMain : Form
     {
-        public FormMain()
-        {
-            InitializeComponent();
-        }
+        public FormMain() { InitializeComponent(); }
+
         private BindingList<Client_Class> listPC = new BindingList<Client_Class>(); // List of connected clients.
         /*********************************************************************
          * In FormMain_Load event
