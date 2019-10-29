@@ -1,8 +1,10 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace SoL_client_service
@@ -60,10 +62,6 @@ namespace SoL_client_service
             //Set server's port. Will be changable via configs in future.
             this.Port = Port;
         }
-        /*********************************************************************
-         * 
-         */
-
         /*********************************************************************
          * Method for connecting 
          * to server. Should be running
@@ -161,16 +159,73 @@ namespace SoL_client_service
                 try
                 {
                     // Prepare to receive data.
-                    byte[] buffer = new byte[client.ReceiveBufferSize];
-                    // Receive data.
-                    int bytesRead = nwStream.Read(buffer, 0, client.ReceiveBufferSize);
-                    // If received NOTHING (in case lost connection)...
-                    if (bytesRead < 1)
+                    if (client.Client.Poll(1, SelectMode.SelectRead))
+                    {
                         throw new Exception();
-                    // Convert from binary to ASCII string.
-                    string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                    // Perform received command.
-                    Console.Write(dataReceived);
+                    }
+                    StreamReader streamReader = new StreamReader(nwStream);
+                    String ProtocolNameVersion = streamReader.ReadLine();
+                    Console.WriteLine("     " + ProtocolNameVersion);
+                    String ACT = streamReader.ReadLine();
+                    Console.WriteLine("     " + ACT);
+                    String OPTsLine = streamReader.ReadLine();
+                    Console.WriteLine("     " + OPTsLine);
+
+                    switch (ACT.Substring(4))
+                    {
+                        case ("shutdown"):
+                            {
+                                Console.WriteLine("shutdown");
+                                string[] OPTs = OPTsLine.Split(',');
+                                String force = "";
+                                String timer = "0";
+                                foreach (string singleOPT in OPTs)
+                                {
+                                    if (singleOPT.StartsWith("force="))
+                                    {
+                                        if (singleOPT.Substring(6) == "y")
+                                            force = "-f ";
+                                        else
+                                        if (singleOPT.Substring(6) == "n")
+                                            force = "";
+
+                                    }
+                                    else
+                                    if (singleOPT.StartsWith("timer="))
+                                    {
+                                        if (int.TryParse(singleOPT.Substring(6), out int temp))
+                                            timer = temp.ToString();
+                                    }
+                                }
+                                byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(
+                                    "MOL:" + SUPPORTED_PROTOCOL_VERSION + "\n" +
+                                    "ASK:disconnect\n");
+                                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                                Process process = new Process();
+                                process.StartInfo = new ProcessStartInfo
+                                {
+                                    WindowStyle = ProcessWindowStyle.Hidden,
+                                    FileName = "cmd.exe",
+                                    Arguments = "/c " + "shutdown -s " + force + "-t " + timer
+                                };
+                                process.Start();
+                                break;
+                            }
+                        case ("cmd"):
+                            {
+                                Console.WriteLine("cmd");
+                                Console.WriteLine(OPTsLine.Substring(4));
+                                Process process = new Process();
+                                process.StartInfo = new ProcessStartInfo
+                                {
+                                    WindowStyle = ProcessWindowStyle.Hidden,
+                                    FileName = "cmd.exe",
+                                    Arguments = "/c " + OPTsLine.Substring(4)
+                                };
+                                process.Start();
+                                break;
+                            }
+                    }
                 }
                 catch
                 {
@@ -188,6 +243,14 @@ namespace SoL_client_service
                     }
                 }
             }
+        }
+        /*********************************************************************
+         * Process the incoming command.
+         */
+        private bool ProcessAsk(string arg)
+        {
+
+            return true;
         }
         /*********************************************************************
          * Start service thread.
@@ -211,7 +274,7 @@ namespace SoL_client_service
         public void StopSoLService()
         {
             // Abort service thread.
-            while (Service.ThreadState == ThreadState.Running)
+            while (Service.ThreadState == System.Threading.ThreadState.Running)
             {
                 // Abort service thread.
                 Service.Abort();

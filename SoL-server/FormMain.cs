@@ -26,24 +26,40 @@ namespace SoL_server
         {
             dataGridViewClients.DataSource = listPC;
             // Create connection listener thread.
+            StartServer();
+        }
+        /*********************************************************************
+         * 
+         */
+        void StartServer()
+        {
             ClientListenerThread = new Thread(new ThreadStart(ClientListener))
             {
                 IsBackground = true
             };
             ClientListenerThread.Start();
         }
+        void StopServer()
+        {
+            listener.Stop();
+            ClientListenerThread.Abort();
+        }
         /*********************************************************************
-         * 
+         * Listener method.
+         * Used for listening on PORT_NO for clients and 
+         * passing them to serve-method.
          */
         private int PORT_NO = 870; // Server port.  Will be changable via configs in future.
         private bool ServerEnabled = true; // Server flag.
+        TcpListener listener;
         private void ClientListener()
         {
             // Listen at all IPs and specified port.
-            TcpListener listener = new TcpListener(IPAddress.Any, PORT_NO);
-            // While server flag rised.
+            listener = new TcpListener(IPAddress.Any, PORT_NO);
+            // While ServerEnabled flag rised...
             while (ServerEnabled)
             {
+                //Start listening for incoming connections.
                 listener.Start();
                 // When incoming client connected try to serve him.
                 TcpClient client;
@@ -53,16 +69,18 @@ namespace SoL_server
                     client = listener.AcceptTcpClient();
                     // Start serving a client.
                     Thread threadHandleClient = new Thread(new ParameterizedThreadStart(HandleClient))
-                    {
-                        IsBackground = true
-                    };
+                    { IsBackground = true };
                     threadHandleClient.Start(client);
                 }
                 catch (System.Net.Sockets.SocketException)
                 {
+                    //Do nothing in case of failure.
                     break;
                 }
+                //Basic DDoS - protection:
+                //  stop listener to prevent socket flooding,
                 listener.Stop();
+                //  delay between incoming connections.
                 Thread.Sleep(10);
             }
             listener = null;
@@ -182,8 +200,6 @@ namespace SoL_server
         }
         public void ListenClientStream(Object arg)
         {
-
-            //Client_Class singleClient = listPC[(int)arg];
             Client_Class singleClient = (Client_Class)arg;
             while (true)
             {
@@ -267,12 +283,20 @@ namespace SoL_server
                     {
                         case 0:
                             {
-                                listPC[dataGridViewClients.CurrentCell.RowIndex].Cmd("mkdir C:\\test\\");
+                                using (FormCmd formCmd = new FormCmd())
+                                {
+                                    if (formCmd.ShowDialog() == DialogResult.OK)
+                                        listPC[dataGridViewClients.CurrentCell.RowIndex].Cmd(formCmd.cmd());
+                                }
                                 break;
                             }
                         case 1:
                             {
-                                listPC[dataGridViewClients.CurrentCell.RowIndex].Shutdown(true, 0);
+                                using (FormShutdown formShutdown = new FormShutdown())
+                                {
+                                    if (formShutdown.ShowDialog() == DialogResult.OK)
+                                        listPC[dataGridViewClients.CurrentCell.RowIndex].Shutdown(formShutdown.Force(), formShutdown.Timer());
+                                }
                                 break;
                             }
                     }
@@ -295,19 +319,75 @@ namespace SoL_server
 
         private void ButtonShutdownSelected_Click(object sender, EventArgs e)
         {
+            bool someSelected = false;
             for (int i = 0; i < listPC.Count; i++)
-            {
                 if (listPC[i].IsSelected)
-                    listPC[i].Shutdown(true, 0);
+                    someSelected = true;
+            if (!someSelected)
+            {
+                return;
+            }
+            bool force;
+            decimal timer;
+            using (FormShutdown formShutdown = new FormShutdown())
+            {
+                if (formShutdown.ShowDialog() == DialogResult.OK)
+                {
+                    force = formShutdown.Force();
+                    timer = formShutdown.Timer();
+                }
+                else return;
+                for (int i = 0; i < listPC.Count; i++)
+                {
+                    if (listPC[i].IsSelected)
+                        listPC[i].Shutdown(force, timer);
+                }
             }
         }
 
         private void ButtonShutdownAllClients_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < listPC.Count; i++)
+            bool force;
+            decimal timer;
+            using (FormShutdown formShutdown = new FormShutdown())
             {
-                listPC[i].Shutdown(true, 0);
+                if (formShutdown.ShowDialog() == DialogResult.OK)
+                {
+                    force = formShutdown.Force();
+                    timer = formShutdown.Timer();
+                }
+                else return;
+                for (int i = 0; i < listPC.Count; i++)
+                {
+                    listPC[i].Shutdown(force, timer);
+                }
             }
+        }
+
+        private void toolStripMenuItemExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void restartServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+        }
+
+        private void enableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            enableToolStripMenuItem.Enabled = false;
+            disableToolStripMenuItem.Enabled = true;
+            ServerEnabled = true;
+            StartServer();
+        }
+
+        private void disableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            enableToolStripMenuItem.Enabled = true;
+            disableToolStripMenuItem.Enabled = false;
+            ServerEnabled = false;
+            StopServer();
         }
     }
 }

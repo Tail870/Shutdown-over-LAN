@@ -41,7 +41,7 @@ namespace SoL_server
                 return;
             }
         }
-        public void Shutdown(bool force, int timer)
+        public void Shutdown(bool force, decimal timer)
         {
             char forceChar;
             if (force)
