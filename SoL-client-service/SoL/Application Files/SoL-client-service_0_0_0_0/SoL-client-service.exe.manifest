@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="SoL-client-service.exe" version="0.0.0.0" publicKeyToken="85552255a88aa7b5" language="neutral" processorArchitecture="msil" type="win32" />
+  <description asmv2:iconFile="Icon.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="SoL-client-service" version="0.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="SoL-client-service.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          Параметры манифеста UAC
+          Если нужно изменить уровень контроля учетных записей Windows, замените 
+          узел requestedExecutionLevel одним из следующих значений.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+        Если нужно использовать виртуализацию файлов и реестра для обратной
+             совместимости, удалите узел requestedExecutionLevel.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SoL-client-service.exe" size="79272">
+      <assemblyIdentity name="SoL-client-service" version="0.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>F9nYqpQg/JwlDL1JbuUksmRA5xQ=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="Icon.ico" size="67646">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>FcZPdKkaVMaoMw7c97b0kpaPTak=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="SoL-client-service.exe.config" size="161">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>XhmNWIUSMbaVlaWABznwa4dcyj0=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=HIGASHII\Tamashii" issuerKeyHash="c806e8167f6284cec1004efa35f47ab61fa796c7" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>iDSrl2uXNQb+G61v/Q35dvJsmWA=</DigestValue></Reference></SignedInfo><SignatureValue>uaqtrzQ7RqHG8I/UbA5Y4Uq3y8VusMSu24UpwiB7elFHHqVlp8iTuwKE6snk9Dh/eDaiKTGmRCQemgBsa4Z2vv6JEtKRVP17aDq618CilOfnXUGymBka1sX2+aROGwEjuV0SJllnmAQKQ3Nr3qfa/INICFiapRjQElHDJvuAPaw=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>4BlC4iBNNThzZR/lz0VahanT1xsEmJDnFXIVo+hHNBWJsDSomm6pfzI8uH6oPkjjiJKY306wPtsHdd1r4hn69aF52EcjX5RaFWzEa89GOfHxQNs1s/D1/9fKsuZ88Zuly1afLvhl2KK+WQ2ofXIO5+XZDNEckyiCWgOmx1MMR20=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="60996cf276f90dfd6fad1bfe0635976b97ab3488" Description="" Url=""><as:assemblyIdentity name="SoL-client-service.exe" version="0.0.0.0" publicKeyToken="85552255a88aa7b5" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=HIGASHII\Tamashii</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>2PxDBHlHj6biC9db7jvO9/9nXUE=</DigestValue></Reference></SignedInfo><SignatureValue>jSMLv4WMXCAVaTd/6tKNW5pSDHINGDyCjuFVji1mYjBiL6ohsKp6TuJDoyOCJYxONzb5X0Sq4oyEUI7rm18JyrM6c0GErhI667RWhMsAdnnIYkcKswKF8bZRjjfD6SrPHDD9MfnXwTW+xSmm6RGXI7CMvJNRPPB2mbo8osEmmgM=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>4BlC4iBNNThzZR/lz0VahanT1xsEmJDnFXIVo+hHNBWJsDSomm6pfzI8uH6oPkjjiJKY306wPtsHdd1r4hn69aF52EcjX5RaFWzEa89GOfHxQNs1s/D1/9fKsuZ88Zuly1afLvhl2KK+WQ2ofXIO5+XZDNEckyiCWgOmx1MMR20=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB3TCCAUagAwIBAgIQEoby1i/cpLhACx7dV+cwjzANBgkqhkiG9w0BAQUFADAtMSswKQYDVQQDHiIASABJAEcAQQBTAEgASQBJAFwAVABhAG0AYQBzAGgAaQBpMB4XDTE5MTExMDE3MzcwNFoXDTIwMTEwOTIzMzcwNFowLTErMCkGA1UEAx4iAEgASQBHAEEAUwBIAEkASQBcAFQAYQBtAGEAcwBoAGkAaTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA4BlC4iBNNThzZR/lz0VahanT1xsEmJDnFXIVo+hHNBWJsDSomm6pfzI8uH6oPkjjiJKY306wPtsHdd1r4hn69aF52EcjX5RaFWzEa89GOfHxQNs1s/D1/9fKsuZ88Zuly1afLvhl2KK+WQ2ofXIO5+XZDNEckyiCWgOmx1MMR20CAwEAATANBgkqhkiG9w0BAQUFAAOBgQCjfktto+8Yq6Zg+D2uI7ArY/B1Eqz49umZcgXLjD0I/K85Es4vhm+GbiiWO9+eOHfCvm968N3I5X8XVqYL73M03UnfWqD3wsgenXDL9Uk2yf0291rtvSJAg7kN/B1yf2oWYEdD+SU2olT0scObYXkB8ZS0eIPT9dhrXzYSWJDO6Q==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

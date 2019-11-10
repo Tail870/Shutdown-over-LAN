@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoL-client-service", "SoL-c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoL-client-console", "SoL-client-console\SoL-client-console.csproj", "{15C6C800-DA1C-474E-A883-A19FE3E1736E}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SoL service setup", "SoL service setup\SoL service setup.vdproj", "{88B5EAE6-8378-4405-9902-D600E65C470B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,8 @@ Global
 		{15C6C800-DA1C-474E-A883-A19FE3E1736E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15C6C800-DA1C-474E-A883-A19FE3E1736E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15C6C800-DA1C-474E-A883-A19FE3E1736E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88B5EAE6-8378-4405-9902-D600E65C470B}.Debug|Any CPU.ActiveCfg = Debug
+		{88B5EAE6-8378-4405-9902-D600E65C470B}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
