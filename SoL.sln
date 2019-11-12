@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoL-client-console", "SoL-c
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Shutdown over LAN client service", "SoL service setup\SoL service setup.vdproj", "{88B5EAE6-8378-4405-9902-D600E65C470B}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Shutdown over LAN server", "Shutdown over LAN server\Shutdown over LAN server.vdproj", "{E49A51AB-57EC-4414-8EBA-EB616463646C}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Shutdown over LAN server", "SoL server setup\Shutdown over LAN server.vdproj", "{2D455729-7239-422D-889D-7146CFDF7D77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,8 +33,10 @@ Global
 		{15C6C800-DA1C-474E-A883-A19FE3E1736E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{88B5EAE6-8378-4405-9902-D600E65C470B}.Debug|Any CPU.ActiveCfg = Debug
 		{88B5EAE6-8378-4405-9902-D600E65C470B}.Release|Any CPU.ActiveCfg = Release
-		{E49A51AB-57EC-4414-8EBA-EB616463646C}.Debug|Any CPU.ActiveCfg = Debug
-		{E49A51AB-57EC-4414-8EBA-EB616463646C}.Release|Any CPU.ActiveCfg = Release
+		{2D455729-7239-422D-889D-7146CFDF7D77}.Debug|Any CPU.ActiveCfg = Debug
+		{2D455729-7239-422D-889D-7146CFDF7D77}.Debug|Any CPU.Build.0 = Debug
+		{2D455729-7239-422D-889D-7146CFDF7D77}.Release|Any CPU.ActiveCfg = Release
+		{2D455729-7239-422D-889D-7146CFDF7D77}.Release|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
