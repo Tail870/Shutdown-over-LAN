@@ -13,6 +13,8 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Shutdown over LAN client se
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Shutdown over LAN server", "SoL server setup\Shutdown over LAN server.vdproj", "{2D455729-7239-422D-889D-7146CFDF7D77}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", "{0B8D9054-2CAF-4A6D-93EB-D61069E5B567}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{88B5EAE6-8378-4405-9902-D600E65C470B} = {0B8D9054-2CAF-4A6D-93EB-D61069E5B567}
+		{2D455729-7239-422D-889D-7146CFDF7D77} = {0B8D9054-2CAF-4A6D-93EB-D61069E5B567}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A9D2B8C7-49B7-4AA1-97FF-D1B0717EA38F}
