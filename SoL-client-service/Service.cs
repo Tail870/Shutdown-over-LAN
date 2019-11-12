@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
+﻿using System.Configuration;
 using System.ServiceProcess;
-using System.Text;
 using System.Threading;
 
 namespace SoL_client_service
@@ -20,9 +15,9 @@ namespace SoL_client_service
 
         protected override void OnStart(string[] args)
         {
-                // Create client service object. 
-            networkClient = new NetworkClient();
-                // Create thread for servicing and start it.
+            // Create client service object. 
+            networkClient = new NetworkClient(ConfigurationManager.AppSettings.Get("SERVER"), int.Parse(ConfigurationManager.AppSettings.Get("PORT")));
+            // Create thread for servicing and start it.
             Thread startThread = new Thread(new ThreadStart(networkClient.StartSoLService));
             startThread.Start();
         }

@@ -60,7 +60,19 @@ namespace SoL_server
             while (ServerEnabled)
             {
                 //Start listening for incoming connections.
-                listener.Start();
+                try
+                {
+                    listener.Start();
+                }
+                catch (System.Net.Sockets.SocketException e)
+                {
+                    MessageBox.Show("Error starting server - port used? Exception:\n" + e.Message);
+                    enableToolStripMenuItem.Enabled = true;
+                    disableToolStripMenuItem.Enabled = false;
+                    ServerEnabled = false;
+                    StopServer();
+                    return;
+                }
                 // When incoming client connected try to serve him.
                 TcpClient client;
                 try
@@ -252,8 +264,12 @@ namespace SoL_server
                 {
                     // In case of failure stop thread.
                     singleClient.CLIENT.Close();
-                    Invoke((MethodInvoker)(() => listPC.Remove(singleClient)));
-                    Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
+                    try
+                    {
+                        Invoke((MethodInvoker)(() => listPC.Remove(singleClient)));
+                        Invoke((MethodInvoker)(() => dataGridViewClients.Refresh()));
+                    }
+                    catch (System.ObjectDisposedException) { }
                     return;
                 }
                 catch (System.ObjectDisposedException)
