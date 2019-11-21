@@ -424,7 +424,7 @@ namespace SoL_server
             groupBoxSettings.Visible = true;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonApply_Click(object sender, EventArgs e)
         {
             groupBoxSettings.Visible = false; Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             config.AppSettings.Settings["PORT"].Value = numericUpDownPort.Value.ToString();

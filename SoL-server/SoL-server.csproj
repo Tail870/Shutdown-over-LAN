@@ -101,6 +101,9 @@
     <EmbeddedResource Include="FormCmd.ru.resx">
       <DependentUpon>FormCmd.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormMain.en.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>

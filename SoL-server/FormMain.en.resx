@@ -117,93 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ColumnName.HeaderText" xml:space="preserve">
-    <value>Имя</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ColumnName.Width" type="System.Int32, mscorlib">
-    <value>54</value>
-  </data>
-  <data name="ColumnOS.HeaderText" xml:space="preserve">
-    <value>ОС</value>
-  </data>
-  <data name="ColumnAddress.HeaderText" xml:space="preserve">
-    <value>Адрес</value>
-  </data>
-  <data name="ColumnCMD.HeaderText" xml:space="preserve">
-    <value>CMD-команда</value>
-  </data>
-  <data name="ColumnCMD.Width" type="System.Int32, mscorlib">
-    <value>84</value>
-  </data>
-  <data name="ColumnShutdown.HeaderText" xml:space="preserve">
-    <value>Выключить</value>
-  </data>
-  <data name="ColumnShutdown.Width" type="System.Int32, mscorlib">
-    <value>70</value>
-  </data>
-  <data name="buttonShutdownAllClients.Text" xml:space="preserve">
-    <value>Выключить все ПК</value>
-  </data>
-  <data name="buttonShutdownSelected.Text" xml:space="preserve">
-    <value>Выключить выбранные</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="restartServerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>196, 22</value>
-  </data>
-  <data name="restartServerToolStripMenuItem.Text" xml:space="preserve">
-    <value>Перезапустить сервер</value>
-  </data>
-  <data name="toolStripMenuItemExit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>196, 22</value>
-  </data>
-  <data name="toolStripMenuItemExit.Text" xml:space="preserve">
-    <value>Выход</value>
-  </data>
-  <data name="toolStripMenuItemMainMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>53, 20</value>
-  </data>
-  <data name="toolStripMenuItemMainMenu.Text" xml:space="preserve">
-    <value>Меню</value>
-  </data>
   <data name="enableToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 22</value>
-  </data>
-  <data name="enableToolStripMenuItem.Text" xml:space="preserve">
-    <value>Включить</value>
+    <value>112, 22</value>
   </data>
   <data name="disableToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 22</value>
-  </data>
-  <data name="disableToolStripMenuItem.Text" xml:space="preserve">
-    <value>Выключить</value>
+    <value>112, 22</value>
   </data>
   <data name="toolStripSeparator1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>135, 6</value>
-  </data>
-  <data name="serverToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 20</value>
-  </data>
-  <data name="serverToolStripMenuItem.Text" xml:space="preserve">
-    <value>Сервер</value>
-  </data>
-  <data name="buttonSettings.Text" xml:space="preserve">
-    <value>Настройки</value>
-  </data>
-  <data name="buttonApply.Text" xml:space="preserve">
-    <value>Применить</value>
-  </data>
-  <data name="labelPort.Size" type="System.Drawing.Size, System.Drawing">
-    <value>76, 13</value>
-  </data>
-  <data name="labelPort.Text" xml:space="preserve">
-    <value>Номер порта:</value>
-  </data>
-  <data name="groupBoxSettings.Text" xml:space="preserve">
-    <value>Настройки</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>SoL менеджер</value>
+    <value>109, 6</value>
   </data>
 </root>

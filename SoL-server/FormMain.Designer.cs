@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -55,7 +55,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.buttonSettings = new System.Windows.Forms.Button();
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonApply = new System.Windows.Forms.Button();
             this.numericUpDownPort = new System.Windows.Forms.NumericUpDown();
             this.labelPort = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewClients)).BeginInit();
@@ -66,13 +66,13 @@
             // 
             // dataGridViewClients
             // 
+            resources.ApplyResources(this.dataGridViewClients, "dataGridViewClients");
             this.dataGridViewClients.AllowUserToAddRows = false;
             this.dataGridViewClients.AllowUserToDeleteRows = false;
             this.dataGridViewClients.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
             this.dataGridViewClients.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            resources.ApplyResources(this.dataGridViewClients, "dataGridViewClients");
             this.dataGridViewClients.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewClients.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumnIsSelected,
@@ -171,40 +171,40 @@
             // 
             // menuStrip1
             // 
+            resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemMainMenu,
             this.serverToolStripMenuItem});
-            resources.ApplyResources(this.menuStrip1, "menuStrip1");
             this.menuStrip1.Name = "menuStrip1";
             // 
             // toolStripMenuItemMainMenu
             // 
+            resources.ApplyResources(this.toolStripMenuItemMainMenu, "toolStripMenuItemMainMenu");
             this.toolStripMenuItemMainMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.restartServerToolStripMenuItem,
             this.toolStripMenuItemExit});
             this.toolStripMenuItemMainMenu.Name = "toolStripMenuItemMainMenu";
-            resources.ApplyResources(this.toolStripMenuItemMainMenu, "toolStripMenuItemMainMenu");
             // 
             // restartServerToolStripMenuItem
             // 
-            this.restartServerToolStripMenuItem.Name = "restartServerToolStripMenuItem";
             resources.ApplyResources(this.restartServerToolStripMenuItem, "restartServerToolStripMenuItem");
+            this.restartServerToolStripMenuItem.Name = "restartServerToolStripMenuItem";
             this.restartServerToolStripMenuItem.Click += new System.EventHandler(this.restartServerToolStripMenuItem_Click);
             // 
             // toolStripMenuItemExit
             // 
-            this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
             resources.ApplyResources(this.toolStripMenuItemExit, "toolStripMenuItemExit");
+            this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
             this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
             // 
             // serverToolStripMenuItem
             // 
+            resources.ApplyResources(this.serverToolStripMenuItem, "serverToolStripMenuItem");
             this.serverToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.enableToolStripMenuItem,
             this.disableToolStripMenuItem,
             this.toolStripSeparator1});
             this.serverToolStripMenuItem.Name = "serverToolStripMenuItem";
-            resources.ApplyResources(this.serverToolStripMenuItem, "serverToolStripMenuItem");
             // 
             // enableToolStripMenuItem
             // 
@@ -214,14 +214,14 @@
             // 
             // disableToolStripMenuItem
             // 
-            this.disableToolStripMenuItem.Name = "disableToolStripMenuItem";
             resources.ApplyResources(this.disableToolStripMenuItem, "disableToolStripMenuItem");
+            this.disableToolStripMenuItem.Name = "disableToolStripMenuItem";
             this.disableToolStripMenuItem.Click += new System.EventHandler(this.disableToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
             resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
             // 
             // buttonSettings
             // 
@@ -233,18 +233,18 @@
             // groupBoxSettings
             // 
             resources.ApplyResources(this.groupBoxSettings, "groupBoxSettings");
-            this.groupBoxSettings.Controls.Add(this.button1);
+            this.groupBoxSettings.Controls.Add(this.buttonApply);
             this.groupBoxSettings.Controls.Add(this.numericUpDownPort);
             this.groupBoxSettings.Controls.Add(this.labelPort);
             this.groupBoxSettings.Name = "groupBoxSettings";
             this.groupBoxSettings.TabStop = false;
             // 
-            // button1
+            // buttonApply
             // 
-            resources.ApplyResources(this.button1, "button1");
-            this.button1.Name = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            resources.ApplyResources(this.buttonApply, "buttonApply");
+            this.buttonApply.Name = "buttonApply";
+            this.buttonApply.UseVisualStyleBackColor = true;
+            this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
             // 
             // numericUpDownPort
             // 
@@ -317,7 +317,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Button buttonSettings;
         private System.Windows.Forms.GroupBox groupBoxSettings;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonApply;
         private System.Windows.Forms.NumericUpDown numericUpDownPort;
         private System.Windows.Forms.Label labelPort;
     }
