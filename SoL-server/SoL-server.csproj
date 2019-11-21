@@ -97,10 +97,19 @@
     <EmbeddedResource Include="FormCmd.resx">
       <DependentUpon>FormCmd.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormCmd.ru.resx">
+      <DependentUpon>FormCmd.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormMain.ru.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormShutdown.resx">
+      <DependentUpon>FormShutdown.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormShutdown.ru.resx">
       <DependentUpon>FormShutdown.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

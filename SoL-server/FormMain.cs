@@ -7,6 +7,7 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using System.Globalization;
 
 namespace SoL_server
 
@@ -282,7 +283,6 @@ namespace SoL_server
                 }
                 // Convert the data received into a string.
                 string dataReceived = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                Invoke((MethodInvoker)(() => richTextBox1.Text = dataReceived));
             }
         }
         /*********************************************************************
