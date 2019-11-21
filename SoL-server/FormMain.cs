@@ -7,7 +7,7 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
-using System.Globalization;
+using System.Configuration;
 
 namespace SoL_server
 
@@ -25,6 +25,19 @@ namespace SoL_server
         private Thread ClientListenerThread; // Thread for listener.
         private void FormMain_Load(object sender, EventArgs e)
         {
+            if (int.TryParse(ConfigurationManager.AppSettings.Get("PORT"), out int Out))
+            {
+                numericUpDownPort.Value = Out;
+                PORT_NO = Out;
+            }
+            else
+            {
+                Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
+                config.AppSettings.Settings["PORT"].Value = "870";
+                config.Save(ConfigurationSaveMode.Minimal);
+                numericUpDownPort.Value = 870;
+                PORT_NO = 870;
+            }
             dataGridViewClients.DataSource = listPC;
             // Create connection listener thread.
             StartServer();
@@ -50,7 +63,7 @@ namespace SoL_server
          * Used for listening on PORT_NO for clients and 
          * passing them to serve-method.
          */
-        private int PORT_NO = 870; // Server port.  Will be changable via configs in future.
+        private int PORT_NO;               // Server port.
         private bool ServerEnabled = true; // Server flag.
         TcpListener listener;
         private void ClientListener()
@@ -404,6 +417,21 @@ namespace SoL_server
             disableToolStripMenuItem.Enabled = false;
             ServerEnabled = false;
             StopServer();
+        }
+
+        private void buttonSettings_Click(object sender, EventArgs e)
+        {
+            groupBoxSettings.Visible = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            groupBoxSettings.Visible = false; Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            config.AppSettings.Settings["PORT"].Value = numericUpDownPort.Value.ToString();
+            config.Save();
+            PORT_NO = (int)numericUpDownPort.Value;
+            StopServer();
+            StartServer();
         }
     }
 }

@@ -149,6 +149,12 @@
     <value>Выключить выбранные</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="toolStripMenuItemMainMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 20</value>
+  </data>
+  <data name="toolStripMenuItemMainMenu.Text" xml:space="preserve">
+    <value>Меню</value>
+  </data>
   <data name="restartServerToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>196, 22</value>
   </data>
@@ -161,29 +167,32 @@
   <data name="toolStripMenuItemExit.Text" xml:space="preserve">
     <value>Выход</value>
   </data>
-  <data name="toolStripMenuItemMainMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>53, 23</value>
+  <data name="serverToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 20</value>
   </data>
-  <data name="toolStripMenuItemMainMenu.Text" xml:space="preserve">
-    <value>Меню</value>
-  </data>
-  <data name="enableToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 22</value>
+  <data name="serverToolStripMenuItem.Text" xml:space="preserve">
+    <value>Сервер</value>
   </data>
   <data name="enableToolStripMenuItem.Text" xml:space="preserve">
     <value>Включить</value>
   </data>
-  <data name="disableToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 22</value>
-  </data>
   <data name="disableToolStripMenuItem.Text" xml:space="preserve">
     <value>Выключить</value>
   </data>
-  <data name="serverToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 23</value>
+  <data name="настройкиToolStripMenuItem.Text" xml:space="preserve">
+    <value>Настройки</value>
   </data>
-  <data name="serverToolStripMenuItem.Text" xml:space="preserve">
-    <value>Сервер</value>
+  <data name="вToolStripMenuItem.Text" xml:space="preserve">
+    <value>Порт сервера</value>
+  </data>
+  <data name="toolStripTextBoxPort.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 9pt</value>
+  </data>
+  <data name="toolStripTextBoxPort.MaxLength" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="toolStripTextBoxPort.Text" xml:space="preserve">
+    <value>870</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>SoL менеджер</value>
