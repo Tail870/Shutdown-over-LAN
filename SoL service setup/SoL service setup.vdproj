@@ -232,9 +232,9 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Shutdown over LAN client service"
-        "ProductCode" = "8:{55D4E26B-9E1E-42B0-97AA-8EF6E05E5118}"
+        "ProductCode" = "8:{7E495D72-A43A-42B3-A71A-E27A950E8720}"
         "PackageCode" = "8:{01BD03C6-DE32-4ABF-B580-EA343D4880D2}"
-        "UpgradeCode" = "8:{C17BFCB1-0FEE-472C-A785-8DD2D3913E4A}"
+        "UpgradeCode" = "8:{38F5683B-848F-499A-8DB7-F1D5B76BC394}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
