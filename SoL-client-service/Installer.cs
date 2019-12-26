@@ -48,7 +48,16 @@ namespace SoL_client_service
             {
                 string SERVER = Context.Parameters["SERVER"].ToString();
                 string PORT = Context.Parameters["PORT"].ToString();
-                MessageBox.Show(SERVER+":"+PORT);
+                if (SERVER.Equals(""))
+                {
+                    MessageBox.Show("Адрес сервера не указан!");
+                    throw new Exception();
+                }                
+                if (PORT.Equals(""))
+                {
+                    MessageBox.Show("Порт не указан! Будет использован порт по-умолчанию - 870.");
+                    PORT = "870";
+                }
 
                 // Get the path to the executable file that is being installed on the target computer  
                 string appConfigPath = Context.Parameters["assemblypath"] + ".config";
